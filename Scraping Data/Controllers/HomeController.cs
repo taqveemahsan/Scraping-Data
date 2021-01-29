@@ -28,7 +28,10 @@ namespace Scraping_Data.Controllers
         [ActionName("Index")]
         public ActionResult Index1(string Search_Value,string Search_sold= "")
         {
+            //Declaration of Variables
+            var Message = "";
             ItemsName items = new ItemsName();
+            SellerNameScrape sellerNameScrape = new SellerNameScrape();
             List<string> NameProducts = new List<string>();
             List<string> sellerName = new List<string>();
             IList<IWebElement> namesList;
@@ -36,155 +39,190 @@ namespace Scraping_Data.Controllers
             IList<IWebElement> location;
             IList<IWebElement> SellerList;
             IList<IWebElement> soldList;
+
+            //Open CHromium and Get First Values
             IWebDriver driver = new ChromeDriver(@"c:/");
             driver.Url = "https://www.aliexpress.com/";
             driver.Manage().Window.Minimize();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+            //Initialize IWEBELEMENTS variables
             driver.FindElement(By.Id("search-key")).SendKeys(Search_Value + Keys.Enter);
             ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0,1080)");
             namesList = driver.FindElements(By.ClassName("item-title"));
             soldList = driver.FindElements(By.XPath("//*[@id='root']/div/div/div[2]/div[2]/div/div[2]/ul/div/li/div/div/div/div/div/span/a"));
-            //if (soldList == null) { }
+            
             //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[2]/li[1]/div/div[2]/div/div[7]/div/span/a
             ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0,1080)");
             var numb = 1;
             var listNumber = 1;
             ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0,1080)");
-            for (int i = 0; i < namesList.Count; i++)
-            {
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-                var curr = ((IJavaScriptExecutor)driver).ExecuteScript("return window.pageYOffset;").ToString();
-                var curr1 = Int32.Parse(curr);
-                ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(" + curr1 + "," + (curr1 + 900) + ")");
-                Console.WriteLine(namesList[i].Text);
-                namesList = driver.FindElements(By.ClassName("item-title"));
-                soldList = driver.FindElements(By.XPath("//*[@id='root']/div/div/div[2]/div[2]/div/div[2]/ul/div/li/div/div/div/div/div/span/a"));
-            }
-            ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0,1080)");
-            for (int s=0;s<soldList.Count;s++)
-            {
-                var curr = ((IJavaScriptExecutor)driver).ExecuteScript("return window.pageYOffset;").ToString();
-                var curr1 = Int32.Parse(curr);
-                ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(" + curr1 + "," + (curr1 + 900) + ")");
-                //Console.WriteLine(namesList[i].Text);
-                //soldList = driver.FindElements(By.XPath("sale-value-link"));
-                var soldValue = soldList[s].Text;
-                var soldValue1 = soldValue.ToString();
-
-                //Find Number from string
-                string b = string.Empty;
-                var intValueSold = 1.00;
-
-                for (int i = 0; i < soldValue1.Length; i++)
+            
+            if (soldList.Count != 0){
+                //Select all Values of Sold List Items
+                for (int i = 0; i < namesList.Count; i++)
                 {
-                    if (Char.IsDigit(soldValue1[i]))
-                        b += soldValue1[i];
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                    var curr = ((IJavaScriptExecutor)driver).ExecuteScript("return window.pageYOffset;").ToString();
+                    var curr1 = Int32.Parse(curr);
+                    ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(" + curr1 + "," + (curr1 + 900) + ")");
+                    Console.WriteLine(namesList[i].Text);
+                    namesList = driver.FindElements(By.ClassName("item-title"));
+                    soldList = driver.FindElements(By.XPath("//*[@id='root']/div/div/div[2]/div[2]/div/div[2]/ul/div/li/div/div/div/div/div/span/a"));
                 }
-
-                if (b.Length > 0)
-                    intValueSold = Int32.Parse(b);
-                
-                var ValueFromInput = Int32.Parse(Search_sold);
-                
-                if(intValueSold>= ValueFromInput)
-                {
-                    if (listNumber > 4)
-                    {
-                        numb++;
-                        listNumber = 1;
-
-                    }
-                    IWebElement ValueName = driver.FindElement(By.XPath("//*[@id='root']/div/div/div[2]/div[2]/div/div[2]/ul/div[" + numb + "]/li[" + listNumber + "]/div/div[2]/div/div[1]/a"));
-                    numb = (s / 4) + 1;
-                    
-                    var listLength = namesList.Count;
-                    //namesList.Append(ValueName);
-                    NameProducts.Add(ValueName.Text);
-                    items.ItemsName1 = ValueName.Text;
-                    listNumber++;
-                    
-                }
-            }
-
-            model.ItemsNames.Add(items);
-            model.SaveChanges();
-            
-
-            //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[1]/li[1]/div/div[2]/div/div[1]/a
-            //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[1]/li[2]/div/div[2]/div/div[1]/a
-            //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[2]/li[1]/div/div[2]/div/div[1]/a
-            //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[3]/li[1]/div/div[2]/div/div[1]/a
-            //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[15]/li[1]/div/div[2]/div/div[1]/a
-
-            
-
-            var total = namesList.Count;
-            var totalSolids = soldList.Count;
-            var listCount = NameProducts.Count;
-            IWebDriver driver1=new ChromeDriver(@"c:/");
-            driver1.Url = "https://www.ebay.com/";
-            driver1.Manage().Window.Minimize();
-            driver1.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-            
-            for (int i = 0; i < NameProducts.Count; i++)
-            {
-                //var name = namesList[i].Text;
-                var name = NameProducts[i].ToString();
-                var WordsArray = name.Split();
-                string Items = WordsArray[0] + ' ' + WordsArray[1]+ ' ' + WordsArray[2] + ' ' + WordsArray[3];
-                //IEnumerable<string> words = name.Split(new char[] { ' ' }, 2).Take(5);
-                driver1.FindElement(By.Id("gh-ac")).SendKeys(Items + Keys.Enter);
-                location = driver1.FindElements(By.ClassName("s-item__location"));
-                for(int j=0;j<location.Count;j++)
+                ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0,1080)");
+                //Check first Condition if user add sold item value and get all items list from Ali Express
+                for (int s = 0; s < soldList.Count; s++)
                 {
                     var curr = ((IJavaScriptExecutor)driver).ExecuteScript("return window.pageYOffset;").ToString();
                     var curr1 = Int32.Parse(curr);
                     ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(" + curr1 + "," + (curr1 + 900) + ")");
-                    Console.WriteLine(location[j].Text);
-                    location = driver1.FindElements(By.ClassName("s-item__location"));
-                    
-                }
-                var locationItem = location.Count;
-                for(int k=0;k<location.Count;k++)
-                {
-                    var curr = ((IJavaScriptExecutor)driver).ExecuteScript("return window.pageYOffset;").ToString();
-                    var curr1 = Int32.Parse(curr);
-                    ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(" + curr1 + "," + (curr1 + 900) + ")");
-                    //Console.WriteLine(location[k].Text);
-                    location = driver1.FindElements(By.ClassName("s-item__location"));
-                    var locationName = location[k].Text;
-                    locationName.ToString();
-                    var num = k + 1;
-                    if (locationName=="From China" || locationName == "De China")
-                    {
-                        try
-                        {
-                            driver1.FindElement(By.XPath("//*[@id='srp-river-results']/ul/li["+ num + "]/div/div[2]/a")).Click();
-                            driver1.FindElement(By.ClassName("mbg-nw")).Click();
-                            //*[@id="RightSummaryPanel"]/div[3]/div/div/div/div[1]/div[1]/a
-                            var locationOfSeller = driver1.FindElement(By.ClassName("mem_loc"));
-                            var TextSeller = locationOfSeller.Text;
-                            var locationOfSellers = TextSeller.ToString();
-                            if (locationOfSellers != "China")
-                            {
-                                IWebElement SellerName1= driver1.FindElement(By.ClassName("mbg-id"));
-                                sellerName.Add(SellerName1.Text);
-                                
-                            }
-                            driver1.Navigate().Back();
-                            driver1.Navigate().Back();
-                        }
-                        catch(Exception e)
-                        {
-                            throw e;
-                        }
+                    //Console.WriteLine(namesList[i].Text);
+                    //soldList = driver.FindElements(By.XPath("sale-value-link"));
+                    var soldValue = soldList[s].Text;
+                    var soldValue1 = soldValue.ToString();
 
+                    //Find Number from string
+                    string b = string.Empty;
+                    var intValueSold = 1.00;
+
+                    for (int i = 0; i < soldValue1.Length; i++)
+                    {
+                        if (Char.IsDigit(soldValue1[i]))
+                            b += soldValue1[i];
                     }
 
+                    if (b.Length > 0)
+                        intValueSold = Int32.Parse(b);
+
+                    var ValueFromInput = Int32.Parse(Search_sold);
+
+                    //ValueFromInput given by User
+                    if (intValueSold >= ValueFromInput)
+                    {
+                        if (listNumber > 4)
+                        {
+                            numb++;
+                            listNumber = 1;
+
+                        }
+                        //Get specific element name given by user
+                        IWebElement ValueName = driver.FindElement(By.XPath("//*[@id='root']/div/div/div[2]/div[2]/div/div[2]/ul/div[" + numb + "]/li[" + listNumber + "]/div/div[2]/div/div[1]/a"));
+                        numb = (s / 4) + 1;
+
+                        var listLength = namesList.Count;
+                        //namesList.Append(ValueName);
+
+                        //Save names in List Items of string 
+                        NameProducts.Add(ValueName.Text);
+                        items.ItemsName1 = ValueName.Text;
+
+                        //Save all Item names in DataBase
+                        model.ItemsNames.Add(items);
+                        model.SaveChanges();
+                        listNumber++;
+
+                    }
                 }
-                 
+
+                
+
+
+                //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[1]/li[1]/div/div[2]/div/div[1]/a
+                //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[1]/li[2]/div/div[2]/div/div[1]/a
+                //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[2]/li[1]/div/div[2]/div/div[1]/a
+                //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[3]/li[1]/div/div[2]/div/div[1]/a
+                //*[@id="root"]/div/div/div[2]/div[2]/div/div[2]/ul/div[15]/li[1]/div/div[2]/div/div[1]/a
+
+
+                //Check values of all getting values
+                var total = namesList.Count;
+                var totalSolids = soldList.Count;
+                var listCount = NameProducts.Count;
+
+                //Start chromium for Ebay
+                IWebDriver driver1 = new ChromeDriver(@"c:/");
                 driver1.Url = "https://www.ebay.com/";
+                driver1.Manage().Window.Minimize();
+                driver1.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+                //Search and Gets all Products one by one from list
+                for (int i = 0; i < NameProducts.Count; i++)
+                {
+                    //var name = namesList[i].Text;
+                    var name = NameProducts[i].ToString();
+                    var WordsArray = name.Split();
+                    string Items = WordsArray[0] + ' ' + WordsArray[1] + ' ' + WordsArray[2] + ' ' + WordsArray[3];
+                    //IEnumerable<string> words = name.Split(new char[] { ' ' }, 2).Take(5);
+                    driver1.FindElement(By.Id("gh-ac")).SendKeys(Items + Keys.Enter);
+                    location = driver1.FindElements(By.ClassName("s-item__location"));
+                    //Gets locations of the values given in products search
+                    for (int j = 0; j < location.Count; j++)
+                    {
+                        var curr = ((IJavaScriptExecutor)driver).ExecuteScript("return window.pageYOffset;").ToString();
+                        var curr1 = Int32.Parse(curr);
+                        ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(" + curr1 + "," + (curr1 + 900) + ")");
+                        Console.WriteLine(location[j].Text);
+                        location = driver1.FindElements(By.ClassName("s-item__location"));
+
+                    }
+                    var locationItem = location.Count;
+                    //Check locations value 
+                    for (int k = 0; k < location.Count; k++)
+                    {
+                        var curr = ((IJavaScriptExecutor)driver).ExecuteScript("return window.pageYOffset;").ToString();
+                        var curr1 = Int32.Parse(curr);
+                        ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(" + curr1 + "," + (curr1 + 900) + ")");
+                        //Console.WriteLine(location[k].Text);
+                        location = driver1.FindElements(By.ClassName("s-item__location"));
+                        var locationName = location[k].Text;
+                        locationName.ToString();
+                        var num = k + 1;
+                        if (locationName == "From China" || locationName == "De China")
+                        {
+                            try
+                            {
+                                driver1.FindElement(By.XPath("//*[@id='srp-river-results']/ul/li[" + num + "]/div/div[2]/a")).Click();
+                                driver1.FindElement(By.ClassName("mbg-nw")).Click();
+                                //*[@id="RightSummaryPanel"]/div[3]/div/div/div/div[1]/div[1]/a
+                                var locationOfSeller = driver1.FindElement(By.ClassName("mem_loc"));
+                                var TextSeller = locationOfSeller.Text;
+                                var locationOfSellers = TextSeller.ToString();
+
+                                //Check seller is not from China
+                                if (locationOfSellers != "China")
+                                {
+                                    IWebElement SellerName1 = driver1.FindElement(By.ClassName("mbg-id"));
+                                    sellerName.Add(SellerName1.Text);
+                                    sellerNameScrape.SellerName = SellerName1.Text;
+
+                                    //Add Seler name in DataBase
+                                    model.SellerNameScrapes.Add(sellerNameScrape);
+                                    model.SaveChanges();
+
+                                }
+                                driver1.Navigate().Back();
+                                driver1.Navigate().Back();
+                            }
+                            catch (Exception e)
+                            {
+                                throw e;
+                            }
+
+                        }
+
+                    }
+
+                    driver1.Url = "https://www.ebay.com/";
+                }
+                driver.Quit();
+                driver1.Quit();
             }
+            else
+            {
+                Message = "Given Products have value 0";
+            }
+            
             return View();
         }
 
