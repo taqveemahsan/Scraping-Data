@@ -182,7 +182,7 @@ namespace Scraping_Data.Controllers
                     }
 
                 }
-                
+                 
                 driver1.Url = "https://www.ebay.com/";
             }
             return View();
