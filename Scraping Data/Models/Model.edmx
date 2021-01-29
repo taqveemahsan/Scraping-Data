@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ScrapeTestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ItemsNames">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemsName" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="ScrapEbay">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar(max)" />
+          <Property Name="IDofItem" Type="varchar(max)" />
+          <Property Name="URL" Type="varchar(max)" />
+          <Property Name="price" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="SellerNameScrape">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SellerName" Type="varchar(max)" />
+        </EntityType>
+        <EntityContainer Name="ScrapeTestModelStoreContainer">
+          <EntitySet Name="ItemsNames" EntityType="Self.ItemsNames" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ScrapEbay" EntityType="Self.ScrapEbay" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SellerNameScrape" EntityType="Self.SellerNameScrape" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ScrapeTestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ScrapeTestEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ItemsNames" EntityType="ScrapeTestModel.ItemsName" />
+          <EntitySet Name="ScrapEbays" EntityType="ScrapeTestModel.ScrapEbay" />
+          <EntitySet Name="SellerNameScrapes" EntityType="ScrapeTestModel.SellerNameScrape" />
+        </EntityContainer>
+        <EntityType Name="ItemsName">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemsName1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="ScrapEbay">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IDofItem" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="price" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SellerNameScrape">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SellerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ScrapeTestModelStoreContainer" CdmEntityContainer="ScrapeTestEntities">
+          <EntitySetMapping Name="ItemsNames">
+            <EntityTypeMapping TypeName="ScrapeTestModel.ItemsName">
+              <MappingFragment StoreEntitySet="ItemsNames">
+                <ScalarProperty Name="ItemsName1" ColumnName="ItemsName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ScrapEbays">
+            <EntityTypeMapping TypeName="ScrapeTestModel.ScrapEbay">
+              <MappingFragment StoreEntitySet="ScrapEbay">
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="IDofItem" ColumnName="IDofItem" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SellerNameScrapes">
+            <EntityTypeMapping TypeName="ScrapeTestModel.SellerNameScrape">
+              <MappingFragment StoreEntitySet="SellerNameScrape">
+                <ScalarProperty Name="SellerName" ColumnName="SellerName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
